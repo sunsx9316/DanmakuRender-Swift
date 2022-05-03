@@ -51,10 +51,10 @@ public class DanmakuEngine {
     }
     
     /// 当前活跃的弹幕
-    private lazy var activeContainers = [DanmakuContainer]()
+    lazy var activeContainers = [DanmakuContainer]()
     
     /// 当前被移出屏幕的弹幕
-    private lazy var inactiveContainers = [DanmakuContainer]()
+    lazy var inactiveContainers = [DanmakuContainer]()
     
     /// 时钟
     private lazy var clock: Clock = {
@@ -108,7 +108,7 @@ public class DanmakuEngine {
     
     //MARK: Privte Method
     private func createContext(_ container: DanmakuContainerProtocol) -> DanmakuContext {
-        return DanmakuContext(canvas: self.canvas, container: container, activeContainers: self.activeContainers, inactiveContainers: self.inactiveContainers, engineSpeed: self.speed, engineTime: self.time)
+        return DanmakuContext(engine: self, container: container)
     }
 }
 

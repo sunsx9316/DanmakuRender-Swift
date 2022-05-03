@@ -21,26 +21,42 @@ public enum DanmakuEffectStyle {
 
 
 /// 弹幕上下文
-public struct DanmakuContext {
+public class DanmakuContext {
     
     /// 弹幕所在画布
-    public let canvas: DRView
+    public var canvas: DRView {
+        return self.engine.canvas
+    }
     
     /// 弹幕所属容器
-    public var container: DanmakuContainerProtocol
+    public let container: DanmakuContainerProtocol
     
     /// 当前活跃的弹幕容器
-    public let activeContainers: [DanmakuContainerProtocol]
+    public var activeContainers: [DanmakuContainerProtocol] {
+        return self.engine.activeContainers
+    }
     
     /// 当前不活跃的弹幕容器
-    public let inactiveContainers: [DanmakuContainerProtocol]
+    public var inactiveContainers: [DanmakuContainerProtocol] {
+        return self.engine.inactiveContainers
+    }
     
     /// 引擎速度
-    public let engineSpeed: Double
+    public var engineSpeed: Double {
+        return self.engine.speed
+    }
     
     /// 引擎时间
-    public let engineTime: TimeInterval
+    public var engineTime: TimeInterval {
+        return self.engine.time
+    }
     
+    public let engine: DanmakuEngine
+    
+    init(engine: DanmakuEngine, container: DanmakuContainerProtocol) {
+        self.engine = engine
+        self.container = container
+    }
 }
 
 /// 弹幕协议
