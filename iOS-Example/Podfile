@@ -1,0 +1,5 @@
+use_frameworks!
+
+target 'iOS-Example' do
+  pod 'DanmakuRender-Swift', :path => '../'
+end

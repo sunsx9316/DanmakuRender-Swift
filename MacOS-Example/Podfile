@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'DanmakuRender-Swift_Example' do
+  pod 'DanmakuRender-Swift', :path => '../'
+
+  target 'DanmakuRender-Swift_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
