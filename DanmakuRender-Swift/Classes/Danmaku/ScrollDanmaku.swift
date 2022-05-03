@@ -184,13 +184,13 @@ open class ScrollDanmaku: BaseDanmaku {
     
     /// 计算弹幕初始位置X
     private func startX(_ context: DanmakuContext, speed: CGFloat, appearTime: TimeInterval) -> CGFloat {
-        let timeDiffOffset = self.timeDiffOffset(context, speed: speed, appearTime: appearTime)
+        let timeDiffOffset = abs(self.timeDiffOffset(context, speed: speed, appearTime: appearTime))
         let x: CGFloat
         switch self.direction {
         case .toRight:
-            x = context.canvas.bounds.minX - context.container.frame.width + timeDiffOffset
+            x = context.canvas.bounds.minX - context.container.frame.width - timeDiffOffset
         case .toLeft:
-            x = context.canvas.bounds.maxX - timeDiffOffset
+            x = context.canvas.bounds.maxX + timeDiffOffset
         }
         return x
     }
