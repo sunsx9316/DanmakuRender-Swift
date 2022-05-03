@@ -96,7 +96,7 @@ open class FloatDanmaku: BaseDanmaku {
     }
     
     public override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
-        return self.appearTime + self.lifeTime < context.engineTime
+        return abs(context.engineTime - self.appearTime) > self.lifeTime
     }
     
 }
