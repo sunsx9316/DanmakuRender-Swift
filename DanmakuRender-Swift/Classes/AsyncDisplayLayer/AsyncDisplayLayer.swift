@@ -91,7 +91,6 @@ class AsyncDisplayLayer: CALayer {
         
         AsyncDisplayQueue.addOperation { [weak self] in
             guard let self = self else {
-                isCancelled()
                 return
             }
             
