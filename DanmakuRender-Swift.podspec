@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'jimhuang' => 'sun_8434@163.com' }
-  s.source           = { :git => 'https://github.com/jimhuang/DanmakuRender-Swift.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/sunsx9316/DanmakuRender-Swift.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.osx.deployment_target = "10.10"
