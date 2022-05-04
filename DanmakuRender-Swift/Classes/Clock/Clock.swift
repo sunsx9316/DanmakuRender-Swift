@@ -23,7 +23,11 @@ class Clock {
     var speed: Double = 1
     
     /// 当前时间
-    var time: TimeInterval = 0
+    var time: TimeInterval = 0 {
+        didSet {
+            self.delegate?.clock(self, didChange: self.time + self.offset)
+        }
+    }
     
     /// 上一次记录的时间
     private var previousTime: CFTimeInterval = 0
