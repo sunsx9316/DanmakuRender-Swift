@@ -57,11 +57,7 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
     
     private func setupInit() {
         self.asyncLayerDelegate = self
-        #if os(iOS)
         self.contentsGravity = CALayerContentsGravity.left
-        #else
-        self.contentsGravity = kCAGravityTopLeft
-        #endif
     }
     
     private func danmakuChange() {

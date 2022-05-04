@@ -89,7 +89,7 @@ public class DanmakuCanvas: DRView {
 
 #if os(macOS)
 extension DanmakuCanvas: NSViewLayerContentScaleDelegate {
-    public override func layer(_ layer: CALayer, shouldInheritContentsScale newScale: CGFloat, from window: NSWindow) -> Bool {
+    public func layer(_ layer: CALayer, shouldInheritContentsScale newScale: CGFloat, from window: NSWindow) -> Bool {
         self.forEachContainer { container in
             container.contentsScale = newScale
             container.isNeedRedraw = true

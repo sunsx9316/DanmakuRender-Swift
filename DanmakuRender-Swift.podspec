@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 一个跨 iOS/MacOS 平台的弹幕渲染器，关注性能和拓展性。
                        DESC
 
-  s.homepage         = 'https://github.com/jimhuang/DanmakuRender-Swift'
+  s.homepage         = 'https://github.com/sunsx9316/DanmakuRender-Swift'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'jimhuang' => 'sun_8434@163.com' }
@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
   s.ios.framework  = 'UIKit'
   s.osx.framework  = 'AppKit'
   s.module_name = 'DanmakuRender'
+  s.swift_versions = '5.0'
 
   # s.resource_bundles = {
   #   'DanmakuRender-Swift' => ['DanmakuRender-Swift/Assets/*.png']
