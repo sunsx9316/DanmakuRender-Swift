@@ -19,6 +19,9 @@ open class ScrollDanmaku: BaseDanmaku {
     
     public let direction: Direction
     
+    /// 额外附加速度
+    public var extraSpeed: CGFloat = 1
+    
     /// 弹幕完全消失的时间
     private var didDisappearTime: TimeInterval = 0
     
@@ -93,7 +96,7 @@ open class ScrollDanmaku: BaseDanmaku {
             if let danmaku = trackInfo[i] {
                 let danmakuDidAppearTime = danmaku.appearTime + (danmaku.didDisappearTime - danmaku.willDisappearTime)
                 //加一个最小间距
-                let gapTime = self.danmakuGap / self.realSpeed(context, speed: danmaku.speed)
+                let gapTime = self.danmakuGap / self.realSpeed(speed: danmaku.speed)
                 //弹幕即将消失的时间比轨道中最后一个弹幕完全消失的时间大 且
                 //弹幕即将出现在屏幕上的时间比轨道中最后一个弹幕完全出现的时间大 则不可能发生碰撞
                 if self.willDisappearTime > danmaku.didDisappearTime && selfWillAppearTime > danmakuDidAppearTime + gapTime {
@@ -159,7 +162,7 @@ open class ScrollDanmaku: BaseDanmaku {
     
     /// 计算弹幕即将消失的时间
     private func calculateWillDisappearTime(_ context: DanmakuContext, speed: Double, appearTime: TimeInterval) -> Double {
-        let realSpeed = self.realSpeed(context, speed: speed)
+        let realSpeed = self.realSpeed(speed: speed)
         let startX = self.startX(context, speed: speed, appearTime: appearTime)
         switch self.direction {
         case .toLeft:
@@ -171,14 +174,14 @@ open class ScrollDanmaku: BaseDanmaku {
     
     /// 计算弹幕完全消失的时间
     private func calculateDidDisappearTime(_ context: DanmakuContext, willDisappearTime: TimeInterval) -> Double {
-        let realSpeed = self.realSpeed(context, speed: speed)
+        let realSpeed = self.realSpeed(speed: speed)
         return willDisappearTime + context.container.frame.width / realSpeed
     }
     
     
     /// 弹幕实际的速度
-    private func realSpeed(_ context: DanmakuContext, speed: CGFloat) -> Double {
-        let moveSpeed = speed * context.engineSpeed
+    private func realSpeed(speed: CGFloat) -> Double {
+        let moveSpeed = speed * self.extraSpeed
         return moveSpeed
     }
     
@@ -197,7 +200,7 @@ open class ScrollDanmaku: BaseDanmaku {
     
     /// 计算弹幕距离即将显示在屏幕上的时间差
     private func timeDiffOffset(_ context: DanmakuContext, speed: CGFloat, appearTime: TimeInterval) -> CGFloat {
-        let realSpeed = self.realSpeed(context, speed: speed)
+        let realSpeed = self.realSpeed(speed: speed)
         let diff = (context.engineTime - appearTime) * realSpeed
         return diff
     }

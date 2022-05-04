@@ -41,11 +41,6 @@ public class DanmakuContext {
         return self.engine.inactiveContainers
     }
     
-    /// 引擎速度
-    public var engineSpeed: Double {
-        return self.engine.speed
-    }
-    
     /// 引擎时间
     public var engineTime: TimeInterval {
         return self.engine.time
