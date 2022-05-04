@@ -51,10 +51,10 @@ public class DanmakuEngine {
     }
     
     /// 当前活跃的弹幕
-    lazy var activeContainers = [DanmakuContainer]()
+    private(set) lazy var activeContainers = [DanmakuContainer]()
     
     /// 当前被移出屏幕的弹幕
-    lazy var inactiveContainers = [DanmakuContainer]()
+    private(set) lazy var inactiveContainers = [DanmakuContainer]()
     
     /// 时钟
     private lazy var clock: Clock = {
