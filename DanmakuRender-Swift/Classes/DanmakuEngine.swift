@@ -9,8 +9,19 @@ import Foundation
 
 public class DanmakuEngine {
     
+    /// 弹幕布局风格
+    public enum LayoutStyle {
+        /// 及时风格，有弹幕就发射
+        case timely
+        /// 倾向不重叠，可能会忽略部分弹幕
+        case nonOverlapping
+    }
+    
     /// 弹幕画布
     public private(set) lazy var canvas = DanmakuCanvas()
+    
+    /// 弹幕布局风格
+    public var layoutStyle = LayoutStyle.timely
     
     /// 当前时间
     public var time: TimeInterval {
@@ -101,9 +112,12 @@ public class DanmakuEngine {
             container = .init(danmaku: danmaku)
         }
         
-        self.activeContainers.append(container)
-        self.canvas.add(container)
-        container.danmaku.willAddToCanvas(self.createContext(container))
+        if container.danmaku.shouldAddToCanvas(self.createContext(container)) {
+            self.activeContainers.append(container)
+            self.canvas.add(container)
+        } else {
+            self.inactiveContainers.append(container)
+        }
     }
     
     //MARK: Privte Method

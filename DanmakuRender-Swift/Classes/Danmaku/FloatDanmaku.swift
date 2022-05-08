@@ -33,8 +33,8 @@ open class FloatDanmaku: BaseDanmaku {
         super.init(text: text, textColor: textColor, font: font, effectStyle: effectStyle)
     }
     
-    public override func willAddToCanvas(_ context: DanmakuContext) {
-        super.willAddToCanvas(context)
+    public override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
+        let flag = super.shouldAddToCanvas(context)
 
         //根据弹幕尺寸确定所在轨道
         let trackHeight = self.trackHeight(context)
@@ -79,11 +79,19 @@ open class FloatDanmaku: BaseDanmaku {
         }
         
         if track == nil {
-            track = leastDanmakuTrack
+            switch context.layoutStyle {
+            case .timely:
+                track = leastDanmakuTrack
+            case .nonOverlapping:
+                //不重叠的布局风格，会忽略某些弹幕
+                return false
+            }
         }
         
         self.track = track!
         self.didLayout(context)
+        
+        return flag
     }
     
     public override func didLayout(_ context: DanmakuContext) {

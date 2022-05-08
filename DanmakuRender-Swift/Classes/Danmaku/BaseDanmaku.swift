@@ -94,11 +94,13 @@ open class BaseDanmaku: DanmakuProtocol {
         return (context.container.frame.height == 0 ? 24 : context.container.frame.height) + 6
     }
     
-    public func willAddToCanvas(_ context: DanmakuContext) {
+    public func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
         //未指定显示时间，则将添加到屏幕的时间作为显示时间
         if appearTime == 0 {
             self.appearTime = context.engineTime
         }
+        
+        return true
     }
     
     public func update(context: DanmakuContext) {
@@ -123,9 +125,8 @@ open class BaseDanmaku: DanmakuProtocol {
                             y: (size.height - textSize.height) / 2)
         
         if self.effectStyle == .stroke {
-            let lineWidth = max(self.font.pointSize / 6, 1)
             //绘制描边
-            context.setLineWidth(lineWidth)
+            context.setLineWidth(1)
             context.setLineJoin(.round)
             context.setStrokeColor(self.effectColor.cgColor)
             context.setTextDrawingMode(.stroke)
@@ -180,5 +181,6 @@ open class BaseDanmaku: DanmakuProtocol {
         self.size = .init(width: textSize.width + padding.width,
                           height: textSize.height + padding.height)
     }
+    
     
 }

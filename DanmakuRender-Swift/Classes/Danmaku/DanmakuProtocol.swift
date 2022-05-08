@@ -23,6 +23,10 @@ public enum DanmakuEffectStyle {
 /// 弹幕上下文
 public class DanmakuContext {
     
+    public var layoutStyle: DanmakuEngine.LayoutStyle {
+        return self.engine.layoutStyle
+    }
+    
     /// 弹幕所在画布
     public var canvas: DRView {
         return self.engine.canvas
@@ -64,7 +68,7 @@ public protocol DanmakuProtocol: AsyncLayerDisplayTask {
     
     /// 即将被添加到画布
     /// - Parameter context: 上下文
-    func willAddToCanvas(_ context: DanmakuContext)
+    func shouldAddToCanvas(_ context: DanmakuContext) -> Bool
     
     /// 需要重新布局
     /// - Parameter context: 上下文
@@ -85,10 +89,6 @@ public protocol DanmakuProtocol: AsyncLayerDisplayTask {
 }
 
 public extension DanmakuProtocol {
-    
-    func willAddToCanvas(_ context: DanmakuContext) {
-        
-    }
     
     func willMoveOutCanvas(_ context: DanmakuContext) {
         
