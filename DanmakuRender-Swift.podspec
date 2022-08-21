@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DanmakuRender-Swift'
-  s.version          = '1.1'
+  s.version          = '1.2'
   s.summary          = '一个跨 iOS/MacOS 平台的弹幕渲染器。'
 
 # This description is used to generate tags and improve search results.

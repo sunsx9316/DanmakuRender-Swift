@@ -26,6 +26,9 @@ public class DanmakuEngine {
     /// 当前时间
     public var time: TimeInterval {
         set {
+            //fix 时间倒退导致滚动弹幕无效的问题
+            self.activeContainers.forEach({ $0.isActive = false })
+            
             self.clock.time = newValue
         }
         
@@ -74,6 +77,9 @@ public class DanmakuEngine {
         return clock
     }()
     
+    /// ctx缓存key
+    private static var ctxCacheKey = 0
+    
     public init() {}
     
     deinit {
@@ -92,6 +98,7 @@ public class DanmakuEngine {
         
         self.activeContainers.forEach({ $0.removeFromCanvas() })
         self.activeContainers.removeAll()
+        self.inactiveContainers.removeAll()
     }
     
     /// 暂停弹幕引擎
@@ -107,12 +114,13 @@ public class DanmakuEngine {
         if let cacheContainer = self.inactiveContainers.first {
             container = cacheContainer
             container.danmaku = danmaku
+            container.isActive = true
             self.inactiveContainers.removeFirst()
         } else {
             container = .init(danmaku: danmaku)
         }
         
-        if container.danmaku.shouldAddToCanvas(self.createContext(container)) {
+        if container.danmaku.shouldAddToCanvas(self.context(with: container)) {
             self.activeContainers.append(container)
             self.canvas.add(container)
         } else {
@@ -121,18 +129,28 @@ public class DanmakuEngine {
     }
     
     //MARK: Privte Method
-    private func createContext(_ container: DanmakuContainerProtocol) -> DanmakuContext {
-        return DanmakuContext(engine: self, container: container)
+    private func context(with container: DanmakuContainerProtocol) -> DanmakuContext {
+        if let ctx = objc_getAssociatedObject(container, &DanmakuEngine.ctxCacheKey) as? DanmakuContext {
+            return ctx
+        }
+        
+        let ctx = DanmakuContext(engine: self, container: container)
+        objc_setAssociatedObject(container, &DanmakuEngine.ctxCacheKey, ctx, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return ctx
     }
+    
 }
 
 extension DanmakuEngine: ClockDelegate {
     func clock(_ clock: Clock, didChange time: TimeInterval) {
         
         for (idx, container) in self.activeContainers.enumerated().reversed() {
-            let ctx = self.createContext(container)
+            let ctx = self.context(with: container)
+            
+            var isActive = container.isActive && !container.danmaku.shouldMoveOutCanvas(ctx)
+            
             //移出屏幕
-            if container.danmaku.shouldMoveOutCanvas(ctx) == true {
+            if !isActive {
                 container.danmaku.willMoveOutCanvas(ctx)
                 container.removeFromCanvas()
                 self.activeContainers.remove(at: idx)

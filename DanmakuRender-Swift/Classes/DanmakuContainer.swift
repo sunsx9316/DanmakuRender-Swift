@@ -39,6 +39,9 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
         }
     }
     
+    /// 是否为激活状态，false时会被移出屏幕
+    var isActive = true
+    
     init(danmaku: DanmakuProtocol) {
         self.danmaku = danmaku
         super.init()
