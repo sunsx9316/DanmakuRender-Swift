@@ -9,14 +9,6 @@ import Foundation
 
 public class DanmakuCanvas: DRView {
     
-    private var aLayer: CALayer {
-#if os(macOS)
-        return self.layer!
-#else
-        return self.layer
-#endif
-    }
-    
     private var scale: CGFloat {
 #if os(iOS)
         return UIScreen.main.scale
@@ -61,26 +53,24 @@ public class DanmakuCanvas: DRView {
     /// 添加弹幕容器到层级中
     /// - Parameter container: 容器
     func add(_ container: DanmakuContainer) {
-        container.contentsScale = self.scale
-        self.aLayer.addSublayer(container)
+        container.scaleFactor = self.scale
+        self.addSubview(container)
     }
     
     //MARK: Private Method
     private func setupInit() {
 #if os(macOS)
         self.wantsLayer = true
-        self.aLayer.backgroundColor = DRColor.clear.cgColor
+        self.layer?.backgroundColor = DRColor.clear.cgColor
 #else
         self.backgroundColor = DRColor.clear
 #endif
     }
     
     private func forEachContainer(_ body: (DanmakuContainer) -> Void) {
-        if let sublayers = self.aLayer.sublayers {
-            for layer in sublayers {
-                if let layer = layer as? DanmakuContainer {
-                    body(layer)
-                }
+        for container in self.subviews {
+            if let container = container as? DanmakuContainer {
+                body(container)
             }
         }
     }
@@ -91,7 +81,7 @@ public class DanmakuCanvas: DRView {
 extension DanmakuCanvas: NSViewLayerContentScaleDelegate {
     public func layer(_ layer: CALayer, shouldInheritContentsScale newScale: CGFloat, from window: NSWindow) -> Bool {
         self.forEachContainer { container in
-            container.contentsScale = newScale
+            container.scaleFactor = newScale
             container.isNeedRedraw = true
         }
         

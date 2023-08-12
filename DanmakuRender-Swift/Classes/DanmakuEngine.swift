@@ -128,6 +128,18 @@ public class DanmakuEngine {
         }
     }
     
+    /// 更新弹幕
+    /// - Parameters:
+    ///   - danmaku: 弹幕
+    ///   - animateHandle: 动画句柄
+    public func update(_ danmaku: DanmakuProtocol, animateHandle: ((DRView) -> Void)? = nil) {
+        if let container = activeContainers.first(where: { $0.danmaku === danmaku }) {
+            container.isNeedRedraw = true
+            container.isNeedLayout = true
+            animateHandle?(container)
+        }
+    }
+    
     //MARK: Privte Method
     private func context(with container: DanmakuContainerProtocol) -> DanmakuContext {
         if let ctx = objc_getAssociatedObject(container, &DanmakuEngine.ctxCacheKey) as? DanmakuContext {
@@ -147,7 +159,7 @@ extension DanmakuEngine: ClockDelegate {
         for (idx, container) in self.activeContainers.enumerated().reversed() {
             let ctx = self.context(with: container)
             
-            var isActive = container.isActive && !container.danmaku.shouldMoveOutCanvas(ctx)
+            let isActive = container.isActive && !container.danmaku.shouldMoveOutCanvas(ctx)
             
             //移出屏幕
             if !isActive {

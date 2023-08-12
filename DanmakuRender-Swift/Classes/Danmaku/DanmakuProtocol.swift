@@ -59,9 +59,11 @@ public class DanmakuContext {
 }
 
 /// 弹幕协议
-public protocol DanmakuProtocol: AsyncLayerDisplayTask {
+public protocol DanmakuProtocol: AnyObject, AsyncLayerDisplayTask {
     
     var isNeedsDisplay: Bool { get set }
+    
+    var isNeedsLayout: Bool { get set }
     
     /// 弹幕尺寸
     var size: CGSize { get }
@@ -86,11 +88,4 @@ public protocol DanmakuProtocol: AsyncLayerDisplayTask {
     /// - Parameter context: 上下文
     /// - Returns: 返回true，则被移除
     func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool
-}
-
-public extension DanmakuProtocol {
-    
-    func willMoveOutCanvas(_ context: DanmakuContext) {
-        
-    }
 }

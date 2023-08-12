@@ -33,7 +33,7 @@ open class FloatDanmaku: BaseDanmaku {
         super.init(text: text, textColor: textColor, font: font, effectStyle: effectStyle)
     }
     
-    public override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
+    open override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
         let flag = super.shouldAddToCanvas(context)
 
         //根据弹幕尺寸确定所在轨道
@@ -94,7 +94,7 @@ open class FloatDanmaku: BaseDanmaku {
         return flag
     }
     
-    public override func didLayout(_ context: DanmakuContext) {
+    open override func didLayout(_ context: DanmakuContext) {
         let trackHeight = self.trackHeight(context)
         var danmakuFrame = context.container.frame
         let canvasFrame = context.canvas.bounds
@@ -103,7 +103,7 @@ open class FloatDanmaku: BaseDanmaku {
         context.container.frame = danmakuFrame
     }
     
-    public override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
+    open override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
         return abs(context.engineTime - self.appearTime) > self.lifeTime
     }
     

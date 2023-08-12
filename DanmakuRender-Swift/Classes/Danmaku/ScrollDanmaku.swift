@@ -65,7 +65,7 @@ open class ScrollDanmaku: BaseDanmaku {
     }
     
     //MARK: - DanmakuProtocol
-    public override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
+    open override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
         let flag = super.shouldAddToCanvas(context)
         
         let danmakuSize = context.container.frame.size
@@ -167,7 +167,7 @@ open class ScrollDanmaku: BaseDanmaku {
         return flag
     }
     
-    public override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
+    open override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
         switch self.direction {
         case .toRight:
             return context.container.frame.minX >= context.canvas.bounds.width
@@ -176,13 +176,13 @@ open class ScrollDanmaku: BaseDanmaku {
         }
     }
     
-    public override func update(context: DanmakuContext) {
+    open override func update(context: DanmakuContext) {
         var frame = context.container.frame
         frame.origin.x = self.positionOffset(at: context.engineTime)
         context.container.frame = frame
     }
     
-    public override func didLayout(_ context: DanmakuContext) {
+    open override func didLayout(_ context: DanmakuContext) {
         let realSpeed = self.realSpeed
         
         switch self.direction {

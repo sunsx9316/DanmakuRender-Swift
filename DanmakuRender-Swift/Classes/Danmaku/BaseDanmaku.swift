@@ -21,6 +21,7 @@ open class BaseDanmaku: DanmakuProtocol {
         didSet {
             self.resetAttributedString()
             self.isNeedsDisplay = true
+            self.isNeedsLayout = true
         }
     }
     
@@ -37,6 +38,7 @@ open class BaseDanmaku: DanmakuProtocol {
         didSet {
             self.resetAttributedString()
             self.isNeedsDisplay = true
+            self.isNeedsLayout = true
         }
     }
     
@@ -45,11 +47,15 @@ open class BaseDanmaku: DanmakuProtocol {
         didSet {
             self.resetAttributedString()
             self.isNeedsDisplay = true
+            self.isNeedsLayout = true
         }
     }
     
     /// 是否需要重绘
     public var isNeedsDisplay = false
+    
+    /// 是否需要重新布局
+    public var isNeedsLayout = false
     
     /// 富文本，便于绘制
     private var attributedString: NSAttributedString!
@@ -94,7 +100,7 @@ open class BaseDanmaku: DanmakuProtocol {
         return (context.container.frame.height == 0 ? 24 : context.container.frame.height) + 6
     }
     
-    public func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
+    open func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
         //未指定显示时间，则将添加到屏幕的时间作为显示时间
         if appearTime == 0 {
             self.appearTime = context.engineTime
@@ -103,19 +109,23 @@ open class BaseDanmaku: DanmakuProtocol {
         return true
     }
     
-    public func update(context: DanmakuContext) {
+    open func update(context: DanmakuContext) {
         
     }
     
-    public func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
+    open func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
         return false
     }
     
-    public func didLayout(_ context: DanmakuContext) {
+    open func didLayout(_ context: DanmakuContext) {
         
     }
     
-    public func draw(_ context: CGContext, size: CGSize, isCancelled: @escaping (() -> Bool)) {
+    open func willMoveOutCanvas(_ context: DanmakuContext) {
+        
+    }
+    
+    open func draw(_ context: CGContext, size: CGSize, isCancelled: @escaping (() -> Bool)) {
         if isCancelled() {
             return
         }

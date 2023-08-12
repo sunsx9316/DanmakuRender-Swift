@@ -16,7 +16,17 @@ public protocol DanmakuContainerProtocol: AnyObject {
 }
 
 /// 弹幕容器
-class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
+class DanmakuContainer: DRView, DanmakuContainerProtocol {
+    
+    var scaleFactor: CGFloat {
+        get {
+            self.displayLayer.contentsScale
+        }
+        
+        set {
+            self.displayLayer.contentsScale = newValue
+        }
+    }
     
     /// 弹幕
     var danmaku: DanmakuProtocol {
@@ -26,7 +36,18 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
     }
     
     /// 是否需要重新布局
-    var isNeedLayout = false
+    var isNeedLayout: Bool {
+        get {
+            return self.danmaku.isNeedsLayout
+        }
+        
+        set {
+            if self.isNeedLayout && self.frame.size != self.danmaku.size {
+                self.frame.size = self.danmaku.size
+            }
+            self.danmaku.isNeedsLayout = newValue
+        }
+    }
     
     /// 是否需要重新绘制
     var isNeedRedraw: Bool {
@@ -44,10 +65,17 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
     
     init(danmaku: DanmakuProtocol) {
         self.danmaku = danmaku
-        super.init()
+        super.init(frame: .zero)
         self.setupInit()
         self.danmakuChange()
     }
+    
+    private lazy var displayLayer: AsyncDisplayLayer = {
+        let layer = AsyncDisplayLayer()
+        layer.asyncLayerDelegate = self
+        layer.contentsGravity = CALayerContentsGravity.left
+        return layer
+    }()
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -55,17 +83,38 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
     
     /// 将自己从画布中移除
     func removeFromCanvas() {
-        self.removeFromSuperlayer()
+        self.removeFromSuperview()
     }
     
+    
     private func setupInit() {
-        self.asyncLayerDelegate = self
-        self.contentsGravity = CALayerContentsGravity.left
+#if os(macOS)
+        self.wantsLayer = true
+        self.layer?.backgroundColor = DRColor.clear.cgColor
+        self.layer?.addSublayer(self.displayLayer)
+#else
+        self.backgroundColor = DRColor.clear
+        self.layer.addSublayer(self.displayLayer)
+#endif
+        
     }
+    
+#if os(iOS)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.displayLayer.frame = self.bounds
+    }
+    
+#else
+    override func layout() {
+        super.layout()
+        self.displayLayer.frame = self.bounds
+    }
+#endif
     
     private func danmakuChange() {
         self.frame.size = self.danmaku.size
-        self.contents = nil
+        self.displayLayer.contents = nil
         self.redraw()
     }
     
@@ -77,7 +126,7 @@ class DanmakuContainer: AsyncDisplayLayer, DanmakuContainerProtocol {
     
     //MARK: Private Method
     @objc private func contentsNeedUpdated() {
-        self.setNeedsDisplay()
+        self.displayLayer.setNeedsDisplay()
     }
 }
 
