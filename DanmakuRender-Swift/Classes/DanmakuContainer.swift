@@ -18,6 +18,10 @@ public protocol DanmakuContainerProtocol: AnyObject {
 /// 弹幕容器
 class DanmakuContainer: DRView, DanmakuContainerProtocol {
     
+    /// 上下文
+    var context: DanmakuContext?
+    
+    /// 缩放因子
     var scaleFactor: CGFloat {
         get {
             self.displayLayer.contentsScale

@@ -77,9 +77,6 @@ public class DanmakuEngine {
         return clock
     }()
     
-    /// ctx缓存key
-    private static var ctxCacheKey = 0
-    
     public init() {}
     
     deinit {
@@ -141,13 +138,13 @@ public class DanmakuEngine {
     }
     
     //MARK: Privte Method
-    private func context(with container: DanmakuContainerProtocol) -> DanmakuContext {
-        if let ctx = objc_getAssociatedObject(container, &DanmakuEngine.ctxCacheKey) as? DanmakuContext {
+    private func context(with container: DanmakuContainer) -> DanmakuContext {
+        if let ctx = container.context {
             return ctx
         }
         
         let ctx = DanmakuContext(engine: self, container: container)
-        objc_setAssociatedObject(container, &DanmakuEngine.ctxCacheKey, ctx, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        container.context = ctx
         return ctx
     }
     

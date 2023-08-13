@@ -177,12 +177,16 @@ open class ScrollDanmaku: BaseDanmaku {
     }
     
     open override func update(context: DanmakuContext) {
+        super.update(context: context)
+        
         var frame = context.container.frame
         frame.origin.x = self.positionOffset(at: context.engineTime)
         context.container.frame = frame
     }
     
     open override func didLayout(_ context: DanmakuContext) {
+        super.didLayout(context)
+        
         let realSpeed = self.realSpeed
         
         switch self.direction {

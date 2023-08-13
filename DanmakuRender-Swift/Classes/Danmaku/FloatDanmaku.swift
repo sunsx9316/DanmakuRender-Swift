@@ -95,6 +95,8 @@ open class FloatDanmaku: BaseDanmaku {
     }
     
     open override func didLayout(_ context: DanmakuContext) {
+        super.didLayout(context)
+        
         let trackHeight = self.trackHeight(context)
         var danmakuFrame = context.container.frame
         let canvasFrame = context.canvas.bounds
