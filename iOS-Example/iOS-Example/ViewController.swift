@@ -56,9 +56,7 @@ class ViewController: UIViewController, UIAdaptivePresentationControllerDelegate
             if ctx.fontSize != self.context.fontSize {
                 let font = UIFont.systemFont(ofSize: ctx.fontSize)
                 for con in self.danmakuEngine.containers {
-                    if let danmaku = con.danmaku as? BaseDanmaku {
-                        danmaku.font = font
-                    }
+                    con.danmaku.font = font
                 }
             }
             
