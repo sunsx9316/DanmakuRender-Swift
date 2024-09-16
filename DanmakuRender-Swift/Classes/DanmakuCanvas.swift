@@ -82,7 +82,7 @@ extension DanmakuCanvas: NSViewLayerContentScaleDelegate {
     public func layer(_ layer: CALayer, shouldInheritContentsScale newScale: CGFloat, from window: NSWindow) -> Bool {
         self.forEachContainer { container in
             container.scaleFactor = newScale
-            container.isNeedRedraw = true
+            container.isNeedsRedraw = true
         }
         
         return true
