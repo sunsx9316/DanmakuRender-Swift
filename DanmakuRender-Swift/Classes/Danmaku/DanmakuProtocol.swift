@@ -8,9 +8,9 @@
 import Foundation
 
 /// 弹幕边缘
-public enum DanmakuEffectStyle {
+public enum DanmakuEffectStyle: Int, CaseIterable {
     /// 没有效果
-    case none
+    case none = 0
     /// 描边
     case stroke
     /// 阴影
@@ -58,34 +58,42 @@ public class DanmakuContext {
     }
 }
 
-/// 弹幕协议
-public protocol DanmakuProtocol: AnyObject, AsyncLayerDisplayTask {
+public protocol DanmakuEngineDelegate: AnyObject {
     
-    var isNeedsDisplay: Bool { get set }
+    /// 弹幕是否应该被添加到画布上
+    /// - Parameters:
+    ///   - shouldAdd: 原始实现
+    ///   - danmaku: 弹幕对象
+    /// - Returns: 是否应该被添加到画布上
+    func shouldAddToCanvas(shouldAdd: Bool, danmaku: BaseDanmaku, engine: DanmakuEngine) -> Bool
     
-    var isNeedsLayout: Bool { get set }
+    /// 容器完成布局
+    /// - Parameter danmaku: 弹幕对象
+    func didLayout(danmaku: BaseDanmaku, engine: DanmakuEngine)
     
-    /// 弹幕尺寸
-    var size: CGSize { get }
+    /// 时钟更新回调
+    /// - Parameter danmaku: 弹幕对象
+    func update(danmaku: BaseDanmaku, engine: DanmakuEngine)
     
-    /// 即将被添加到画布
-    /// - Parameter context: 上下文
-    func shouldAddToCanvas(_ context: DanmakuContext) -> Bool
+    /// 即将被移出画布
+    /// - Parameter danmaku: 弹幕对象
+    func willMoveOutCanvas(danmaku: BaseDanmaku, engine: DanmakuEngine)
+}
+
+public extension DanmakuEngineDelegate {
+    func shouldAddToCanvas(shouldAdd: Bool, danmaku: BaseDanmaku, engine: DanmakuEngine) -> Bool {
+        return shouldAdd
+    }
     
-    /// 需要重新布局
-    /// - Parameter context: 上下文
-    func didLayout(_ context: DanmakuContext)
+    func didLayout(danmaku: BaseDanmaku, engine: DanmakuEngine) {
+        
+    }
     
-    /// 更新位置
-    /// - Parameter context: 上下文
-    func update(context: DanmakuContext)
+    func update(danmaku: BaseDanmaku, engine: DanmakuEngine) {
+        
+    }
     
-    /// 即将被移除
-    /// - Parameter context: 上下文
-    func willMoveOutCanvas(_ context: DanmakuContext)
-    
-    /// 是否应该被移出画布
-    /// - Parameter context: 上下文
-    /// - Returns: 返回true，则被移除
-    func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool
+    func willMoveOutCanvas(danmaku: BaseDanmaku, engine: DanmakuEngine) {
+        
+    }
 }

@@ -68,22 +68,21 @@ open class ScrollDanmaku: BaseDanmaku {
     open override func shouldAddToCanvas(_ context: DanmakuContext) -> Bool {
         let flag = super.shouldAddToCanvas(context)
         
-        let danmakuSize = context.container.frame.size
+        let containerSize = context.container.frame.size
         let canvasBounds = context.canvas.bounds
-        self.speed = ceil(self.basicSpeed + ((danmakuSize.width / self.lengthCoefficient) * self.basicSpeed))
+        self.speed = ceil(self.basicSpeed + ((containerSize.width / self.lengthCoefficient) * self.basicSpeed))
         let realSpeed = self.realSpeed
         let timeDiffOffset = (self.appearTime - context.engineTime) * realSpeed
         let start: CGFloat
-
         switch self.direction {
         case .toLeft:
             start = canvasBounds.width + timeDiffOffset
             self.willDisappearTime = self.appearTime + (canvasBounds.width / realSpeed)
         case .toRight:
-            start = -danmakuSize.width - timeDiffOffset
+            start = -containerSize.width - timeDiffOffset
             self.willDisappearTime = self.appearTime + (canvasBounds.width / realSpeed)
         }
-        self.didDisappearTime = danmakuSize.width / realSpeed + self.willDisappearTime
+        self.didDisappearTime = containerSize.width / realSpeed + self.willDisappearTime
         
         //根据弹幕尺寸确定所在轨道
         let trackHeight = self.trackHeight(context)
@@ -129,7 +128,8 @@ open class ScrollDanmaku: BaseDanmaku {
                         /// 弹幕相遇时间 = 弹幕间距 / 弹幕的速度差
                         /// 如果相遇的时间 > 弹幕走完整个屏幕的时间，则认为不会相遇
                         let catchUpTime = distance / (realSpeed - danmakuRealSpeed)
-                        if catchUpTime >= (canvasBounds.width / realSpeed) {
+                        let lifeTime = canvasBounds.width / realSpeed
+                        if catchUpTime >= lifeTime {
                             sendInTrack = i
                             break
                         }
@@ -157,11 +157,16 @@ open class ScrollDanmaku: BaseDanmaku {
             }
         }
         
-        self.track = sendInTrack!
+        if let sendInTrack = sendInTrack {
+            self.track = sendInTrack
+        } else {
+            self.track = 0
+            assert(false, "未找到轨道")
+        }
         
         //在轨道居中显示
         self.originPosition = .init(x: start,
-                                    y: (trackHeight * CGFloat(self.track)) + ((trackHeight - danmakuSize.height) / 2))
+                                    y: (trackHeight * CGFloat(self.track)) + ((trackHeight - containerSize.height) / 2))
         context.container.frame.origin = self.originPosition
         
         return flag
@@ -178,14 +183,13 @@ open class ScrollDanmaku: BaseDanmaku {
     
     open override func update(context: DanmakuContext) {
         super.update(context: context)
-        
         var frame = context.container.frame
         frame.origin.x = self.positionOffset(at: context.engineTime)
         context.container.frame = frame
     }
     
-    open override func didLayout(_ context: DanmakuContext) {
-        super.didLayout(context)
+    open override func doResize(_ context: DanmakuContext) {
+        super.doResize(context)
         
         let realSpeed = self.realSpeed
         
@@ -212,8 +216,18 @@ open class ScrollDanmaku: BaseDanmaku {
     /// - Parameter time: 所处时间
     /// - Returns: 偏移量
     private func positionOffset(at time: TimeInterval) -> CGFloat {
+        
         let realSpeed = self.realSpeed
-        let timeDiffOffset = (time - self.appearTime) * realSpeed
+        let timeDiffOffset: CGFloat
+        
+        var timePast = self.offsetTime ?? 0
+        
+        if let pauseTime = self.pauseTime {
+            /// 被暂停时，相当于弹幕当前的时间停止了
+            timeDiffOffset = (pauseTime - (self.appearTime + timePast)) * realSpeed
+        } else {
+            timeDiffOffset = (time - (self.appearTime + timePast)) * realSpeed
+        }
         
         switch self.direction {
         case .toLeft:

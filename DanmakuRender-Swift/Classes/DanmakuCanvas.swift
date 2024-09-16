@@ -36,7 +36,7 @@ public class DanmakuCanvas: DRView {
         super.layout()
         
         self.forEachContainer { container in
-            container.isNeedLayout = true
+            container.isNeedsLayout = true
         }
     }
     
@@ -45,7 +45,7 @@ public class DanmakuCanvas: DRView {
         super.layoutSubviews()
         
         self.forEachContainer { container in
-            container.isNeedLayout = true
+            container.isNeedsLayout = true
         }
     }
 #endif

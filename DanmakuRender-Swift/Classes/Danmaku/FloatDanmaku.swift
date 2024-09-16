@@ -89,13 +89,13 @@ open class FloatDanmaku: BaseDanmaku {
         }
         
         self.track = track!
-        self.didLayout(context)
+        self.doResize(context)
         
         return flag
     }
     
-    open override func didLayout(_ context: DanmakuContext) {
-        super.didLayout(context)
+    open override func doResize(_ context: DanmakuContext) {
+        super.doResize(context)
         
         let trackHeight = self.trackHeight(context)
         var danmakuFrame = context.container.frame
@@ -106,7 +106,19 @@ open class FloatDanmaku: BaseDanmaku {
     }
     
     open override func shouldMoveOutCanvas(_ context: DanmakuContext) -> Bool {
-        return abs(context.engineTime - self.appearTime) > self.lifeTime
+        if self.isPause {
+            return false
+        }
+        
+        let time = context.engineTime
+        
+        /// 重新恢复计时时，弹幕需要加上已经走过的时间，避免突然消失
+        if let timePast = self.offsetTime {
+            return abs(time - (self.appearTime + timePast)) > self.lifeTime
+        } else {
+            return abs(time - self.appearTime) > self.lifeTime
+        }
+        
     }
     
 }

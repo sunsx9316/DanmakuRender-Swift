@@ -17,6 +17,8 @@ public class DanmakuEngine {
         case nonOverlapping
     }
     
+    public var delegate: (any DanmakuEngineDelegate)?
+    
     /// 弹幕画布
     public private(set) lazy var canvas = DanmakuCanvas()
     
@@ -105,7 +107,7 @@ public class DanmakuEngine {
     
     /// 发射弹幕
     /// - Parameter danmaku: 弹幕
-    public func send(_ danmaku: DanmakuProtocol) {
+    public func send(_ danmaku: BaseDanmaku) {
         let container: DanmakuContainer
         
         if let cacheContainer = self.inactiveContainers.first {
@@ -117,7 +119,11 @@ public class DanmakuEngine {
             container = .init(danmaku: danmaku)
         }
         
-        if container.danmaku.shouldAddToCanvas(self.context(with: container)) {
+        var shouldAddToCanvas = container.danmaku.shouldAddToCanvas(self.context(with: container))
+        if let delegate = self.delegate {
+            shouldAddToCanvas = delegate.shouldAddToCanvas(shouldAdd: shouldAddToCanvas, danmaku: container.danmaku, engine: self)
+        }
+        if shouldAddToCanvas {
             self.activeContainers.append(container)
             self.canvas.add(container)
         } else {
@@ -129,10 +135,10 @@ public class DanmakuEngine {
     /// - Parameters:
     ///   - danmaku: 弹幕
     ///   - animateHandle: 动画句柄
-    public func update(_ danmaku: DanmakuProtocol, animateHandle: ((DRView) -> Void)? = nil) {
+    public func update(_ danmaku: BaseDanmaku, animateHandle: ((DRView) -> Void)? = nil) {
         if let container = activeContainers.first(where: { $0.danmaku === danmaku }) {
-            container.isNeedRedraw = true
-            container.isNeedLayout = true
+            container.isNeedsRedraw = true
+            container.isNeedsLayout = true
             animateHandle?(container)
         }
     }
@@ -160,23 +166,27 @@ extension DanmakuEngine: ClockDelegate {
             
             //移出屏幕
             if !isActive {
-                container.danmaku.willMoveOutCanvas(ctx)
+                self.delegate?.willMoveOutCanvas(danmaku: container.danmaku, engine: self)
                 container.removeFromCanvas()
+                container.danmaku.moveOutFromCanvas(ctx)
                 self.activeContainers.remove(at: idx)
                 self.inactiveContainers.append(container)
             } else {
-                if container.isNeedLayout {
-                    container.danmaku.didLayout(ctx)
-                    container.isNeedLayout = false
+                
+                if container.isNeedsLayout {
+                    container.danmaku.doResize(ctx)
+                    container.isNeedsLayout = false
+                    self.delegate?.didLayout(danmaku: container.danmaku, engine: self)
                 }
                 
-                if container.isNeedRedraw {
+                if container.isNeedsRedraw {
                     container.redraw()
-                    container.isNeedRedraw = false
+                    container.isNeedsRedraw = false
                 }
                 
                 //更新弹幕位置
                 container.danmaku.update(context: ctx)
+                self.delegate?.update(danmaku: container.danmaku, engine: self)
             }
         }
     }

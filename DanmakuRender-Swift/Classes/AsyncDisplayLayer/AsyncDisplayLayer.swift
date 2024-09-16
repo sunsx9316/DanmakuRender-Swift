@@ -60,10 +60,7 @@ class AsyncDisplayLayer: CALayer {
         weak var weakSelf = self
         
         @discardableResult func isCancelled() -> Bool {
-            
-            guard let self = weakSelf else { return true }
-            
-            return value != self.sentinel.value
+            return value != weakSelf?.sentinel.value
         }
         
         let scale = self.contentsScale
@@ -122,10 +119,6 @@ class AsyncDisplayLayer: CALayer {
                 return true
             }
             
-            if isCancelled() {
-                return
-            }
-            
             DispatchQueue.main.async {
                 self.contents = img
             }
@@ -137,10 +130,12 @@ class AsyncDisplayLayer: CALayer {
         #if os(iOS)
         
         UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
-        let success = block(UIGraphicsGetCurrentContext())
-        let img = UIGraphicsGetImageFromCurrentImageContext()
+        var img: DRImage?
+        if block(UIGraphicsGetCurrentContext()) {
+            img = UIGraphicsGetImageFromCurrentImageContext()
+        }
         UIGraphicsEndImageContext()
-        return success ? img?.cgImage : nil
+        return img?.cgImage
         #else
         
         let img = DRImage(size: size, flipped: false) { dstRect in

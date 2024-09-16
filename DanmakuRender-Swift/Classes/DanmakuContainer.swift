@@ -11,7 +11,7 @@ public protocol DanmakuContainerProtocol: AnyObject {
     
     var frame: CGRect { get set }
     
-    var danmaku: DanmakuProtocol { get }
+    var danmaku: BaseDanmaku { get }
  
 }
 
@@ -33,41 +33,38 @@ class DanmakuContainer: DRView, DanmakuContainerProtocol {
     }
     
     /// 弹幕
-    var danmaku: DanmakuProtocol {
+    var danmaku: BaseDanmaku {
         didSet {
             self.danmakuChange()
         }
     }
     
     /// 是否需要重新布局
-    var isNeedLayout: Bool {
+    var isNeedsLayout: Bool {
         get {
             return self.danmaku.isNeedsLayout
         }
         
         set {
-            if self.isNeedLayout && self.frame.size != self.danmaku.size {
-                self.frame.size = self.danmaku.size
-            }
             self.danmaku.isNeedsLayout = newValue
         }
     }
     
     /// 是否需要重新绘制
-    var isNeedRedraw: Bool {
+    var isNeedsRedraw: Bool {
         get {
-            return self.danmaku.isNeedsDisplay
+            return self.danmaku.isNeedsRedraw
         }
         
         set {
-            self.danmaku.isNeedsDisplay = newValue
+            self.danmaku.isNeedsRedraw = newValue
         }
     }
     
     /// 是否为激活状态，false时会被移出屏幕
     var isActive = true
     
-    init(danmaku: DanmakuProtocol) {
+    init(danmaku: BaseDanmaku) {
         self.danmaku = danmaku
         super.init(frame: .zero)
         self.setupInit()
@@ -99,6 +96,7 @@ class DanmakuContainer: DRView, DanmakuContainerProtocol {
 #else
         self.backgroundColor = DRColor.clear
         self.layer.addSublayer(self.displayLayer)
+        self.isUserInteractionEnabled = true
 #endif
         
     }
@@ -117,9 +115,13 @@ class DanmakuContainer: DRView, DanmakuContainerProtocol {
 #endif
     
     private func danmakuChange() {
-        self.frame.size = self.danmaku.size
+        self.danmaku.contextCallBack = { [weak self] in
+            self?.context
+        }
+        
         self.displayLayer.contents = nil
-        self.redraw()
+        self.isNeedsLayout = true
+        self.isNeedsRedraw = true
     }
     
     /// 提交绘制任务
@@ -138,5 +140,4 @@ extension DanmakuContainer: AsyncLayerDelegate {
     func newAsyncDisplayTask() -> AsyncLayerDisplayTask? {
         return self.danmaku
     }
-    
 }
