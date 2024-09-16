@@ -220,7 +220,7 @@ open class ScrollDanmaku: BaseDanmaku {
         let realSpeed = self.realSpeed
         let timeDiffOffset: CGFloat
         
-        var timePast = self.offsetTime ?? 0
+        let timePast = self.offsetTime ?? 0
         
         if let pauseTime = self.pauseTime {
             /// 被暂停时，相当于弹幕当前的时间停止了

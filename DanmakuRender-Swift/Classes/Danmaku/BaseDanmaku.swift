@@ -178,7 +178,7 @@ open class BaseDanmaku: AsyncLayerDisplayTask {
             return
         }
         
-        var attributes = self.attributes
+        let attributes = self.attributes
         let attributedString = NSAttributedString(string: self.text,
                                                   attributes: attributes)
         
