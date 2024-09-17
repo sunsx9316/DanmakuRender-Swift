@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if os(iOS)
+import UIKit
+#endif
 
 protocol ClockDelegate: AnyObject {
     func clock(_ clock: Clock, didChange time: TimeInterval)

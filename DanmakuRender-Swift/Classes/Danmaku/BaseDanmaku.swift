@@ -6,6 +6,10 @@
 //
 
 import Foundation
+#if os(iOS)
+import UIKit
+#endif
+
 
 /// 基础弹幕类
 open class BaseDanmaku: AsyncLayerDisplayTask {
