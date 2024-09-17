@@ -16,6 +16,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "DanmakuRender-Swift", 
-            path: "DanmakuRender-Swift")
+            path: "DanmakuRender-Swift",
+            dependencies: ["CoreGraphics", "QuartsCore"])
     ]
 )
