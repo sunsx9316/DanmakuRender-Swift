@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DanmakuRender-Swift'
-  s.version          = '1.41'
-  s.summary          = '一个跨 iOS/MacOS 平台的弹幕渲染器。'
+  s.version          = '1.6'
+  s.summary          = '一个跨 iOS/tvOS/MacOS 平台的弹幕渲染器。'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-一个跨 iOS/MacOS 平台的弹幕渲染器，关注性能和拓展性。
+一个跨 iOS/tvOS/MacOS 平台的弹幕渲染器，关注性能和拓展性。
                        DESC
 
   s.homepage         = 'https://github.com/sunsx9316/DanmakuRender-Swift'
@@ -30,10 +30,12 @@ Pod::Spec.new do |s|
 
   s.osx.deployment_target = "10.13"
   s.ios.deployment_target = "10.0"
+  s.tvos.deployment_target = "10.0"
 
   s.source_files = 'DanmakuRender-Swift/Classes/**/*'
   s.ios.framework  = 'UIKit'
   s.osx.framework  = 'AppKit'
+  s.tvos.framework = 'UIKit'
   s.module_name = 'DanmakuRender'
   s.swift_versions = '5.0'
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 #else
 import AppKit
@@ -15,7 +15,7 @@ import AppKit
 public class DanmakuCanvas: DRView {
     
     private var scale: CGFloat {
-#if os(iOS)
+#if os(iOS) || os(tvOS)
         return UIScreen.main.scale
 #else
         return self.window?.backingScaleFactor ?? 1

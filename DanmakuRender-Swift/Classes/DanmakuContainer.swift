@@ -6,7 +6,7 @@
 //
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 #else
 import AppKit
@@ -106,7 +106,7 @@ class DanmakuContainer: DRView, DanmakuContainerProtocol {
         
     }
     
-#if os(iOS)
+#if os(iOS) || os(tvOS)
     override func layoutSubviews() {
         super.layoutSubviews()
         self.displayLayer.frame = self.bounds

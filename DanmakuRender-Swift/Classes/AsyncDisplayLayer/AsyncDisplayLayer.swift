@@ -6,7 +6,7 @@
 //
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 #else
 import AppKit
@@ -132,8 +132,8 @@ class AsyncDisplayLayer: CALayer {
     }
     
     private func drawImage(_ size: CGSize, opaque: Bool, scale: CGFloat, block: @escaping((CGContext?) -> Bool)) -> Any? {
-        #if os(iOS)
-        
+        #if os(iOS) || os(tvOS)
+
         UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
         var img: DRImage?
         if block(UIGraphicsGetCurrentContext()) {
