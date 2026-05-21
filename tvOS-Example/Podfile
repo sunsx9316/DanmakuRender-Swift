@@ -1,0 +1,7 @@
+use_frameworks!
+
+platform :tvos, '12.0'
+
+target 'tvOS-Example' do
+  pod 'DanmakuRender-Swift', :path => '../'
+end
