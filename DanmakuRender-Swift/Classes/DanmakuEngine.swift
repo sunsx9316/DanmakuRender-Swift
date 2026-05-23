@@ -8,7 +8,15 @@
 import Foundation
 
 public class DanmakuEngine {
-    
+
+    /// 时钟定时器类型
+    public enum ClockTimerType {
+        /// CADisplayLink — vsync 同步，前台可用，后台停止
+        case displayLink
+        /// DispatchSourceTimer — GCD 定时器，前台/后台均可运行
+        case dispatchSource
+    }
+
     /// 弹幕布局风格
     public enum LayoutStyle {
         /// 及时风格，有弹幕就发射
@@ -74,12 +82,16 @@ public class DanmakuEngine {
     
     /// 时钟
     private lazy var clock: Clock = {
-        var clock = Clock()
+        var clock = Clock(timerType: self.clockTimerType)
         clock.delegate = self
         return clock
     }()
-    
-    public init() {}
+
+    private let clockTimerType: ClockTimerType
+
+    public init(clockTimerType: ClockTimerType = .displayLink) {
+        self.clockTimerType = clockTimerType
+    }
     
     deinit {
         AsyncDisplayQueue.cleanup()

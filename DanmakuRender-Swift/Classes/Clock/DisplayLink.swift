@@ -9,7 +9,7 @@ import Foundation
 
 #if os(macOS)
 import CoreVideo
-class DisplayLink {
+class DisplayLink: DisplayLinkProtocol {
     
     private var displayLink: CVDisplayLink!
     
@@ -59,7 +59,7 @@ class DisplayLink {
 #else
 import UIKit
 
-class DisplayLink {
+class DisplayLink: DisplayLinkProtocol {
     
     private var displayLink: CADisplayLink!
     

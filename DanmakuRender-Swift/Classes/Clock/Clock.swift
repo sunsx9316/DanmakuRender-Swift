@@ -37,23 +37,34 @@ class Clock {
     /// 上一次记录的时间
     private var previousTime: CFTimeInterval = 0
     
-    private var displayLink: DisplayLink?
-    
+    private var displayLink: (any DisplayLinkProtocol)?
+
     private var isRunning = false
-    
+
+    private let timerType: DanmakuEngine.ClockTimerType
+
+    init(timerType: DanmakuEngine.ClockTimerType = .displayLink) {
+        self.timerType = timerType
+    }
+
     func start() {
         if self.isRunning {
             return
         }
-        
+
         self.previousTime = CACurrentMediaTime()
         self.isRunning = true
         if self.displayLink == nil {
-            self.displayLink = DisplayLink(self, selector: #selector(Clock.displayLinkCallBack))
+            switch timerType {
+            case .displayLink:
+                self.displayLink = DisplayLink(self, selector: #selector(Self.displayLinkCallBack))
+            case .dispatchSource:
+                self.displayLink = DispatchTimer(self, selector: #selector(Self.displayLinkCallBack))
+            }
         }
         self.displayLink?.resume()
     }
-    
+
     func stop() {
         self.previousTime = 0
         self.time = 0
